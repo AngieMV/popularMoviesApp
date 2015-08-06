@@ -16,6 +16,8 @@
     <string name="title_activity_detail">Movie details</string>
     <string name="action_share">Share</string>
 
+    <string name="loading_content">Loading content...</string>
+
     <string name="error_no_online">Check your online connectivity</string>
     <string name="error_no_result">No results to display</string>
 

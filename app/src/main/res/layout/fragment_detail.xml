@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:text="New Text"
                 android:id="@+id/detail_sinopsis"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:padding="5dp" />
 
 

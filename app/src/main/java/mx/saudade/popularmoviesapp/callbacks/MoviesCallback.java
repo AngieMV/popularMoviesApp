@@ -2,6 +2,7 @@ package mx.saudade.popularmoviesapp.callbacks;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -27,9 +28,13 @@ public class MoviesCallback implements Callback<Results> {
 
     private GridView view;
 
-    public MoviesCallback(Context context, GridView view) {
+    private View notificationView;
+
+    public MoviesCallback(Context context, GridView view, View notificationView) {
         this.context = context;
         this.view = view;
+        this.notificationView = notificationView;
+        this.notificationView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -38,12 +43,15 @@ public class MoviesCallback implements Callback<Results> {
 
         adapter = new GridAdapter(context, results.getMovies());
         view.setAdapter(adapter);
+        notificationView.setVisibility(View.GONE);
     }
 
     @Override
     public void failure(RetrofitError error) {
         Log.v(TAG, "failure: " + error.toString());
         Toast.makeText(context, context.getString(R.string.error_no_result), Toast.LENGTH_SHORT).show();
+        notificationView.setVisibility(View.GONE);
     }
+
 
 }

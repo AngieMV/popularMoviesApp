@@ -5,6 +5,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -30,9 +31,12 @@ public class Manager {
 
     private GridView view;
 
-    public Manager(Context context, GridView view) {
+    private View notificationView;
+
+    public Manager(Context context, GridView view, View notificationView) {
         this.context = context;
         this.view = view;
+        this.notificationView = notificationView;
     }
 
     public void invokeRetro() {
@@ -52,7 +56,7 @@ public class Manager {
                 .setEndpoint(BASE_URL).build();
 
         MoviesInterface moviesInterface = restAdapter.create(MoviesInterface.class);
-        moviesInterface.getMovies(order, API_KEY , "1", new MoviesCallback(context, view));
+        moviesInterface.getMovies(order, API_KEY , "1", new MoviesCallback(context, view, notificationView));
 
     }
 

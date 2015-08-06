@@ -79,7 +79,11 @@ public class Movie implements Serializable {
     }
 
     public String getReleaseDate() {
-        return releaseDate;
+        return StringUtils.isEmpty(releaseDate) ? "Not available" : releaseDate;
+    }
+
+    public String getReleaseMessage() {
+        return "Release date: " + this.getReleaseDate();
     }
 
     public String getPosterPath() {
@@ -106,7 +110,6 @@ public class Movie implements Serializable {
                 .append(BASE_URL_IMAGES)
                 .append(ImageSize.W500.getSize())
                 .append(posterPath);
-
         return url.toString();
     }
 
@@ -124,6 +127,20 @@ public class Movie implements Serializable {
 
     public float getVoteAverage() {
         return voteAverage;
+    }
+
+    public String getVoteAverageMessage() {
+        return this.getVoteAverage() + " / 10";
+    }
+
+    public String getShareMessage() {
+        StringBuilder message = new StringBuilder();
+        message.append("Check ")
+                .append(this.getOriginalTitle())
+                .append(" (")
+                .append(this.getReleaseDate())
+                .append("). From Popular Movies App");
+        return message.toString();
     }
 
     public int getVoteCount() {

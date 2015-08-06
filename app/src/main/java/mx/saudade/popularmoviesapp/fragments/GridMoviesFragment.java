@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import mx.saudade.popularmoviesapp.R;
 import mx.saudade.popularmoviesapp.activities.DetailActivity;
@@ -25,11 +26,14 @@ public class GridMoviesFragment extends Fragment{
 
     private GridView gridView;
 
+    private TextView notificationView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
+        notificationView = (TextView) rootView.findViewById(R.id.textView_loading);
         gridView = (GridView) rootView.findViewById(R.id.gridView);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -40,7 +44,7 @@ public class GridMoviesFragment extends Fragment{
             }
         });
 
-        manager = new Manager(getActivity(), gridView);
+        manager = new Manager(getActivity(), gridView, notificationView);
 
         return rootView;
     }
