@@ -1,36 +1,42 @@
 package mx.saudade.popularmoviesapp.activities;
 
-import android.content.Intent;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v7.widget.ShareActionProvider;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.os.Build;
 
 import mx.saudade.popularmoviesapp.R;
-import mx.saudade.popularmoviesapp.fragments.GridMoviesFragment;
+import mx.saudade.popularmoviesapp.fragments.DetailFragment;
+import mx.saudade.popularmoviesapp.utils.ActionUtils;
 
-
-public class GridMoviesActivity extends ActionBarActivity {
-
-    private static final String TAG = GridMoviesActivity.class.getSimpleName();
+public class DetailActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_detail);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                   .add(R.id.container, new GridMoviesFragment())
+                    .add(R.id.container, new DetailFragment())
                     .commit();
         }
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_detail, menu);
+
+        ShareActionProvider provider = (ShareActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.action_share));
+        ActionUtils.share(provider, "POPULAR MOVIES APP");
         return true;
     }
 
@@ -43,17 +49,10 @@ public class GridMoviesActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            startActivity();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void startActivity() {
-        Intent i = new Intent();
-        i.setClass(this, SettingsActivity.class);
-        this.startActivity(i);
     }
 
 }

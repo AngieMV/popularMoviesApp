@@ -2,12 +2,17 @@ package mx.saudade.popularmoviesapp.models;
 
 import com.google.gson.annotations.SerializedName;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+
+import java.io.Serializable;
 
 /**
  * Created by angelicamendezvega on 8/4/15.
  */
-public class Movie {
+public class Movie implements Serializable {
+
+    private static final String BASE_URL_IMAGES = "http://image.tmdb.org/t/p/";
 
     private boolean adult;
 
@@ -44,6 +49,86 @@ public class Movie {
 
     @SerializedName("vote_count")
     private int voteCount;
+
+    public boolean isAdult() {
+        return adult;
+    }
+
+    public String getBackdropPath() {
+        return StringUtils.isEmpty(backdropPath) ? StringUtils.EMPTY : backdropPath;
+    }
+
+    public int[] getGenreIds() {
+        return genreIds;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getOriginalLanguage() {
+        return originalLanguage;
+    }
+
+    public String getOriginalTitle() {
+        return StringUtils.isEmpty(originalTitle) ? StringUtils.EMPTY : originalTitle;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public String getPosterPath() {
+        return posterPath;
+    }
+
+    public String getThumbPosterPath() {
+        if (StringUtils.isEmpty(posterPath)) {
+            return null;
+        }
+        StringBuilder url = new StringBuilder()
+                .append(BASE_URL_IMAGES)
+                .append(ImageSize.W342.getSize())
+                .append(posterPath);
+
+        return url.toString();
+    }
+
+    public String getPosterPosterPath() {
+        if (StringUtils.isEmpty(posterPath)) {
+            return null;
+        }
+        StringBuilder url = new StringBuilder()
+                .append(BASE_URL_IMAGES)
+                .append(ImageSize.W500.getSize())
+                .append(posterPath);
+
+        return url.toString();
+    }
+
+    public float getPopularity() {
+        return popularity;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public boolean isVideo() {
+        return video;
+    }
+
+    public float getVoteAverage() {
+        return voteAverage;
+    }
+
+    public int getVoteCount() {
+        return voteCount;
+    }
 
     @Override
     public String toString() {

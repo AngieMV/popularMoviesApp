@@ -16,6 +16,11 @@ public class Results {
     @SerializedName("results")
     private List<Movie> movies;
 
+    public List<Movie> getMovies() {
+        return movies;
+    }
+
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
