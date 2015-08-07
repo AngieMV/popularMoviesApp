@@ -17,6 +17,7 @@ import java.util.List;
 
 import mx.saudade.popularmoviesapp.R;
 import mx.saudade.popularmoviesapp.models.Movie;
+import mx.saudade.popularmoviesapp.models.Results;
 
 /**
  * Created by angelicamendezvega on 8/5/15.
@@ -74,12 +75,17 @@ public class GridAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public Results getMovies() {
+        return new Results(movies);
+    }
+
     static class ViewHolder {
         RelativeLayout layout;
         ImageView image;
         TextView text;
 
     }
+
 }
 
 

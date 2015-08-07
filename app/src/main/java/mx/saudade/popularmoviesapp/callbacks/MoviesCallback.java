@@ -53,5 +53,4 @@ public class MoviesCallback implements Callback<Results> {
         notificationView.setVisibility(View.GONE);
     }
 
-
 }

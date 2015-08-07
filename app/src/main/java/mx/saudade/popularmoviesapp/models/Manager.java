@@ -57,9 +57,7 @@ public class Manager {
 
         MoviesInterface moviesInterface = restAdapter.create(MoviesInterface.class);
         moviesInterface.getMovies(order, API_KEY , "1", new MoviesCallback(context, view, notificationView));
-
     }
-
 
     private String getOrderPreference() {
         String preference  = PreferenceManager.getDefaultSharedPreferences(context)
@@ -82,9 +80,5 @@ public class Manager {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
-
-
-
-
 
 }
