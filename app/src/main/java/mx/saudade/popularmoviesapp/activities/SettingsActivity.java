@@ -29,6 +29,7 @@ public class SettingsActivity extends PreferenceActivity
         // For all preferences, attach an OnPreferenceChangeListener so the UI summary can be
         // updated when the preference changes.
         bindPreferenceSummaryToValue(findPreference(getString(R.string.pref_sortby_key)));
+        bindPreferenceCheckToValue(findPreference(getString(R.string.pref_fav_key)));
     }
 
     /**
@@ -46,6 +47,15 @@ public class SettingsActivity extends PreferenceActivity
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())
                         .getString(preference.getKey(), ""));
+    }
+
+    private void bindPreferenceCheckToValue(Preference preference) {
+        preference.setOnPreferenceChangeListener(this);
+
+        onPreferenceChange(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getBoolean(preference.getKey(), false));
     }
 
     @Override

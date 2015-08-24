@@ -7,4 +7,7 @@
         android:entries="@array/pref_sortby_options"
         android:entryValues="@array/pref_sortby_options"
         android:defaultValue="@string/pref_sortby_default_value"/>
+    <CheckBoxPreference android:key="@string/pref_fav_key"
+        android:title="@string/pref_fav_title"
+        android:defaultValue="false"/>
 </PreferenceScreen>
