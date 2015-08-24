@@ -7,12 +7,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import mx.saudade.popularmoviesapp.R;
-import mx.saudade.popularmoviesapp.fragments.GridMoviesFragment;
+import mx.saudade.popularmoviesapp.fragments.MovieFragment;
 
 
-public class GridMoviesActivity extends ActionBarActivity {
+public class MovieActivity extends ActionBarActivity {
 
-    private static final String TAG = GridMoviesActivity.class.getSimpleName();
+    private static final String TAG = MovieActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +20,7 @@ public class GridMoviesActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                   .add(R.id.container, new GridMoviesFragment())
+                   .add(R.id.container, new MovieFragment())
                     .commit();
         }
     }

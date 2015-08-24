@@ -11,13 +11,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
 import mx.saudade.popularmoviesapp.R;
+import mx.saudade.popularmoviesapp.models.Manager;
 import mx.saudade.popularmoviesapp.models.Movie;
+import mx.saudade.popularmoviesapp.models.Review;
+import mx.saudade.popularmoviesapp.models.Video;
 import mx.saudade.popularmoviesapp.utils.ActionUtils;
 
 /**
@@ -26,6 +31,11 @@ import mx.saudade.popularmoviesapp.utils.ActionUtils;
 public class DetailFragment extends Fragment {
 
     private static final String TAG = DetailFragment.class.getSimpleName();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,6 +49,7 @@ public class DetailFragment extends Fragment {
     public void onStart() {
         super.onStart();
         displayInfo();
+        loadContent();
     }
 
     @Override
@@ -48,6 +59,12 @@ public class DetailFragment extends Fragment {
         ActionUtils.share(provider, getMovie().getShareMessage());
 
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    public void loadContent() {
+        Manager manager = new Manager(getActivity());
+        manager.invokeReviews(getMovie().getId(), getListView(R.id.listView_reviews), getTextView(R.id.textView_loading));
+        manager.invokeVideos(getMovie().getId(), getListView(R.id.listView_trailers), getTextView(R.id.textView_loading));
     }
 
     public void displayInfo() {
@@ -63,6 +80,22 @@ public class DetailFragment extends Fragment {
         getTextView(R.id.detail_release_date).setText(getMovie().getReleaseMessage());
         getTextView(R.id.detail_rating).setText(getMovie().getVoteAverageMessage());
         getTextView(R.id.detail_sinopsis).setText(getMovie().getOverview());
+
+        getListView(R.id.listView_reviews).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Review review = (Review) parent.getAdapter().getItem(position);
+                ActionUtils.viewContent(getActivity(), review.getUrl());
+            }
+        });
+
+        getListView(R.id.listView_trailers).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Video video = (Video) parent.getAdapter().getItem(position);
+                ActionUtils.viewContent(getActivity(), video.getUrl());
+            }
+        });
     }
 
     private Movie getMovie() {
@@ -77,4 +110,7 @@ public class DetailFragment extends Fragment {
         return (ImageView) getView().findViewById(id);
     }
 
+    private ListView getListView(int id) {
+        return (ListView) getView().findViewById(id);
+    }
 }

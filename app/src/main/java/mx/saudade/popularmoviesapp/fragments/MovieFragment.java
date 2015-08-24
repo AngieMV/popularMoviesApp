@@ -3,9 +3,7 @@ package mx.saudade.popularmoviesapp.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,14 +15,14 @@ import java.util.List;
 
 import mx.saudade.popularmoviesapp.R;
 import mx.saudade.popularmoviesapp.activities.DetailActivity;
-import mx.saudade.popularmoviesapp.adapters.GridAdapter;
+import mx.saudade.popularmoviesapp.adapters.MovieAdapter;
 import mx.saudade.popularmoviesapp.models.Manager;
 import mx.saudade.popularmoviesapp.models.Movie;
 import mx.saudade.popularmoviesapp.models.Results;
 
-public class GridMoviesFragment extends Fragment{
+public class MovieFragment extends Fragment{
 
-    private static final String TAG = GridMoviesFragment.class.getSimpleName();
+    private static final String TAG = MovieFragment.class.getSimpleName();
 
     private Manager manager;
 
@@ -52,10 +50,10 @@ public class GridMoviesFragment extends Fragment{
             }
         });
 
-        manager = new Manager(getActivity(), gridView, notificationView);
+        manager = new Manager(getActivity());
 
         if(savedInstanceState != null) {
-            movies = ((Results) savedInstanceState.getSerializable(ID_MOVIES)).getMovies();
+            movies = ((Results<Movie>) savedInstanceState.getSerializable(ID_MOVIES)).getResults();
         }
         return rootView;
     }
@@ -64,14 +62,14 @@ public class GridMoviesFragment extends Fragment{
     public void onStart() {
         super.onStart();
         if (movies == null || movies.size() == 0) {
-            manager.invokeRetro();
+            manager.invokeRetro(gridView, notificationView);
             notificationView.setVisibility(View.VISIBLE);
         } else {
-            GridAdapter adapter = new GridAdapter(getActivity(), movies);
+            MovieAdapter adapter = new MovieAdapter(getActivity());
+            adapter.setResults(movies);
             gridView.setAdapter(adapter);
             notificationView.setVisibility(View.GONE);
         }
-
     }
 
     private void startDetailActivity(Movie movie) {
@@ -84,8 +82,9 @@ public class GridMoviesFragment extends Fragment{
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(ID_MOVIES, ((GridAdapter)
-                ((GridView) getView().findViewById(R.id.gridView)).getAdapter()).getMovies());
+        //FIXME truena aqui la aplicación
+        outState.putSerializable(ID_MOVIES, ((MovieAdapter)
+                ((GridView) getView().findViewById(R.id.gridView)).getAdapter()).getResults());
     }
 
 }

@@ -10,30 +10,29 @@ import java.util.List;
 /**
  * Created by angelicamendezvega on 8/4/15.
  */
-public class Results implements Serializable {
+public class Results<T> implements Serializable {
 
     private int page;
 
     @SerializedName("results")
-    private List<Movie> movies;
+    private List<T> results;
 
     public Results() {
-
     }
 
-    public Results(List<Movie> movies) {
-        this.movies = movies;
+    public Results(List<T> results) {
+        this.results = results;
     }
 
-    public List<Movie> getMovies() {
-        return movies;
+    public List<T> getResults() {
+        return results;
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .append("page", page)
-                .append("movies", movies)
+                .append("results", results)
                 .toString();
     }
 

@@ -6,14 +6,18 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.GridView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 
 import mx.saudade.popularmoviesapp.R;
-import mx.saudade.popularmoviesapp.callbacks.MoviesCallback;
-import mx.saudade.popularmoviesapp.interfaces.MoviesInterface;
+import mx.saudade.popularmoviesapp.adapters.MovieAdapter;
+import mx.saudade.popularmoviesapp.adapters.ReviewAdapter;
+import mx.saudade.popularmoviesapp.adapters.VideoAdapter;
+import mx.saudade.popularmoviesapp.callbacks.AppCallback;
+import mx.saudade.popularmoviesapp.interfaces.AppInterface;
 import retrofit.RestAdapter;
 
 /**
@@ -27,36 +31,44 @@ public class Manager {
 
     private final String API_KEY = "YOUR MOVIE DB API KEY HERE";
 
+    private RestAdapter restAdapter = null;
+
     private Context context;
 
-    private GridView view;
-
-    private View notificationView;
-
-    public Manager(Context context, GridView view, View notificationView) {
+    public Manager(Context context) {
         this.context = context;
-        this.view = view;
-        this.notificationView = notificationView;
     }
 
-    public void invokeRetro() {
+    private AppInterface getMoviesInterface() {
+        if (restAdapter == null) {
+            restAdapter = new RestAdapter.Builder()
+                    .setEndpoint(BASE_URL).build();
+        }
+        return restAdapter.create(AppInterface.class);
+    }
+
+    public void invokeReviews(int movieId, AbsListView view, View notificationView) {
+        Log.v(TAG, "movieId: " + movieId);
+        getMoviesInterface().getReviews(movieId, API_KEY, new AppCallback(context, view, notificationView, new ReviewAdapter(context)));
+    }
+
+    public void invokeVideos(int movieId, AbsListView view, View notificationView) {
+            Log.v(TAG, "movieId: " + movieId);
+            getMoviesInterface().getVideos(movieId, API_KEY, new AppCallback<Video>(context, view, notificationView, new VideoAdapter(context)));
+    }
+
+    public void invokeRetro(AbsListView view, View notificationView) {
         if (!isOnline()) {
             Toast.makeText(context, context.getString(R.string.error_no_online), Toast.LENGTH_SHORT).show();
             return;
         }
 
-        invokeRetro(getOrderPreference());
+        invokeRetro(getOrderPreference(), view, notificationView);
     }
 
-    public void invokeRetro(String order) {
-
+    public void invokeRetro(String order, AbsListView view, View notificationView) {
         Log.v(TAG, "invokeRetro " + order);
-
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint(BASE_URL).build();
-
-        MoviesInterface moviesInterface = restAdapter.create(MoviesInterface.class);
-        moviesInterface.getMovies(order, API_KEY , "1", new MoviesCallback(context, view, notificationView));
+        getMoviesInterface().getMovies(order, API_KEY, "1", new AppCallback(context, (GridView) view, notificationView, new MovieAdapter(context)));
     }
 
     private String getOrderPreference() {

@@ -1,9 +1,13 @@
 package mx.saudade.popularmoviesapp.utils;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
+
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by angelicamendezvega on 8/5/15.
@@ -27,4 +31,14 @@ public class ActionUtils {
 
         provider.setShareIntent(i);
     }
+
+    public static void viewContent(Activity activity, String url) {
+        if (url == null || StringUtils.isEmpty(url)) {
+            return;
+        }
+
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        activity.startActivity(i);
+    }
+
 }

@@ -3,45 +3,45 @@ package mx.saudade.popularmoviesapp.callbacks;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.Toast;
 
 import mx.saudade.popularmoviesapp.R;
-import mx.saudade.popularmoviesapp.adapters.GridAdapter;
+import mx.saudade.popularmoviesapp.adapters.AppAdapter;
+import mx.saudade.popularmoviesapp.adapters.MovieAdapter;
 import mx.saudade.popularmoviesapp.models.Results;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
 /**
- * Created by angelicamendezvega on 8/4/15.
+ * Created by angelicamendezvega on 8/24/15.
  */
-public class MoviesCallback implements Callback<Results> {
+public class AppCallback<T> implements Callback<Results<T>> {
 
-    private static final String TAG = MoviesCallback.class.getSimpleName();
+    protected static final String TAG = AppCallback.class.getSimpleName();
 
-    private Context context;
+    protected Context context;
 
-    private GridAdapter adapter;
+    protected AbsListView view;
 
-    private GridView view;
+    protected View notificationView;
 
-    private View notificationView;
+    protected AppAdapter adapter;
 
-    public MoviesCallback(Context context, GridView view, View notificationView) {
+    public AppCallback(Context context, AbsListView view, View notificationView, AppAdapter adapter) {
         this.context = context;
         this.view = view;
+        this.adapter = adapter;
         this.notificationView = notificationView;
         this.notificationView.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void success(Results results, Response response) {
+    public void success(Results<T> results, Response response) {
         Log.v(TAG, "sucess: " + results.toString());
-
-        adapter = new GridAdapter(context, results.getMovies());
+        adapter.setResults(results.getResults());
         view.setAdapter(adapter);
         notificationView.setVisibility(View.GONE);
     }
@@ -52,5 +52,4 @@ public class MoviesCallback implements Callback<Results> {
         Toast.makeText(context, context.getString(R.string.error_no_result), Toast.LENGTH_SHORT).show();
         notificationView.setVisibility(View.GONE);
     }
-
 }

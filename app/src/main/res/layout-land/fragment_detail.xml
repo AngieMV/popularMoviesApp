@@ -64,7 +64,23 @@
                 android:textSize="15sp"
                 android:textColor="@color/button_background_off"/>
 
+            <ListView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/listView_trailers" />
 
+            <ListView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/listView_reviews" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/loading_content"
+                android:id="@+id/textView_loading"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>
