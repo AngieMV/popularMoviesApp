@@ -75,7 +75,7 @@ public class Movie implements Serializable {
     }
 
     public String getOverview() {
-        return overview;
+        return overview == null ? StringUtils.EMPTY : overview;
     }
 
     public String getReleaseDate() {
@@ -87,7 +87,7 @@ public class Movie implements Serializable {
     }
 
     public String getPosterPath() {
-        return posterPath;
+        return posterPath == null ? StringUtils.EMPTY : posterPath;
     }
 
     public String getThumbPosterPath() {
@@ -131,6 +131,10 @@ public class Movie implements Serializable {
 
     public String getVoteAverageMessage() {
         return this.getVoteAverage() + " / 10";
+    }
+
+    public String get_Id() {
+        return String.valueOf(id);
     }
 
     public String getShareMessage() {
