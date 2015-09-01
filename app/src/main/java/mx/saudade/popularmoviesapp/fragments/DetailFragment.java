@@ -21,12 +21,19 @@ import com.squareup.picasso.Picasso;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.List;
+
 import mx.saudade.popularmoviesapp.R;
+import mx.saudade.popularmoviesapp.adapters.ReviewAdapter;
+import mx.saudade.popularmoviesapp.adapters.VideoAdapter;
+import mx.saudade.popularmoviesapp.data.AppLoaderManager;
 import mx.saudade.popularmoviesapp.models.Manager;
 import mx.saudade.popularmoviesapp.models.Movie;
 import mx.saudade.popularmoviesapp.models.Review;
 import mx.saudade.popularmoviesapp.models.Video;
 import mx.saudade.popularmoviesapp.utils.ActionUtils;
+import mx.saudade.popularmoviesapp.utils.ListViewUtil;
+import mx.saudade.popularmoviesapp.utils.NestedListView;
 
 /**
  * Created by angelicamendezvega on 8/5/15.
@@ -35,9 +42,12 @@ public class DetailFragment extends Fragment {
 
     private static final String TAG = DetailFragment.class.getSimpleName();
 
+    AppLoaderManager manager;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        manager = new AppLoaderManager(getActivity());
     }
 
     @Override
@@ -59,14 +69,23 @@ public class DetailFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_detail, menu);
         ShareActionProvider provider = (ShareActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.action_share));
-        ActionUtils.share(provider, getMovie().getShareMessage() + getTrailer() + ">>>");
+        ActionUtils.share(provider, getMovie().getShareMessage() + ">>>");
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_favorite) {
+            manager.insertAllMovieInfo(getMovie(), getReviews(), getVideos());
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public void loadContent() {
         Manager manager = new Manager(getActivity());
-        manager.invokeReviews(getMovie().getId(), getListView(R.id.listView_reviews), getTextView(R.id.textView_loading));
-        manager.invokeVideos(getMovie().getId(), getListView(R.id.listView_trailers), getTextView(R.id.textView_loading));
+        manager.invokeReviews(getMovie().getId(), getNestedListView(R.id.listView_reviews), getTextView(R.id.textView_loading));
+        manager.invokeVideos(getMovie().getId(), getNestedListView(R.id.listView_trailers), getTextView(R.id.textView_loading));
     }
 
     public void displayInfo() {
@@ -83,7 +102,7 @@ public class DetailFragment extends Fragment {
         getTextView(R.id.detail_rating).setText(getMovie().getVoteAverageMessage());
         getTextView(R.id.detail_sinopsis).setText(getMovie().getOverview());
 
-        getListView(R.id.listView_reviews).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        getNestedListView(R.id.listView_reviews).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Review review = (Review) parent.getAdapter().getItem(position);
@@ -91,29 +110,46 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        getListView(R.id.listView_trailers).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        getNestedListView(R.id.listView_trailers).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Video video = (Video) parent.getAdapter().getItem(position);
                 ActionUtils.viewContent(getActivity(), video.getUrl());
             }
         });
+
+        ListViewUtil.setListViewHeightBasedOnChildren((getNestedListView(R.id.listView_reviews)));
     }
 
     private Movie getMovie() {
         return (Movie) getActivity().getIntent().getSerializableExtra(Intent.EXTRA_SHORTCUT_NAME);
     }
 
+    private List<Review> getReviews() {
+        if(getNestedListView(R.id.listView_reviews).getAdapter() == null
+                || ((ReviewAdapter) getNestedListView(R.id.listView_reviews).getAdapter()).getResults() == null) {
+            return null;
+        }
+        List<Review> reviews = ((ReviewAdapter) getNestedListView(R.id.listView_reviews).getAdapter()).getResults().getResults();
+        Log.v(TAG, reviews.size() + " " + reviews.toString());
+        return reviews;
+    }
+
+    private List<Video> getVideos() {
+        if(getNestedListView(R.id.listView_trailers).getAdapter() == null
+                || ((VideoAdapter) getNestedListView(R.id.listView_trailers).getAdapter()).getResults() == null) {
+            return null;
+        }
+        List<Video> videos = ((VideoAdapter) getNestedListView(R.id.listView_trailers).getAdapter()).getResults().getResults();
+        Log.v(TAG, videos.size() + " " + videos.toString());
+        return  videos;
+    }
+
     private String getTrailer() {
         Log.v(TAG, "GET TRAILER");
-        if(getListView(R.id.listView_trailers).getAdapter() == null
-                || getListView(R.id.listView_trailers).getAdapter().getItem(0) == null) {
-            return StringUtils.EMPTY;
-        }
-
-        Video video = (Video) getListView(R.id.listView_trailers).getItemAtPosition(0);
+        Video video = getVideos().get(0);
         Log.v(TAG, "VIDEO " + video);
-        return video.getUrl();
+        return video == null? null: video.getUrl();
     }
 
     private TextView getTextView(int id) {
@@ -124,8 +160,8 @@ public class DetailFragment extends Fragment {
         return (ImageView) getView().findViewById(id);
     }
 
-    private ListView getListView(int id) {
-        return (ListView) getView().findViewById(id);
+    private NestedListView getNestedListView(int id) {
+        return (NestedListView) getView().findViewById(id);
     }
 
 }

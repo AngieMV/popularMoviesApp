@@ -69,8 +69,8 @@ public class MovieFragment extends Fragment{
         AppLoaderManager manager = new AppLoaderManager(this.getActivity());
 
         //delete
-        manager.deleteAllMovie("123");
-        manager.deleteAllMovie("456");
+        manager.deleteAllMovieInfo("123");
+        manager.deleteAllMovieInfo("456");
 
         //insert movie
         Movie movie = new Movie();

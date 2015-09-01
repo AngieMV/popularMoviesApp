@@ -56,12 +56,26 @@
                 android:textSize="16sp"
                 android:padding="5dp" />
 
-            <ListView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:text="@string/trailers"
+                android:layout_marginTop="10dp"/>
+
+            <mx.saudade.popularmoviesapp.utils.NestedListView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/listView_trailers" />
 
-            <ListView
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:text="@string/reviews"
+                android:layout_marginTop="10dp"/>
+
+            <mx.saudade.popularmoviesapp.utils.NestedListView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/listView_reviews" />

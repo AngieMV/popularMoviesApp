@@ -5,12 +5,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import mx.saudade.popularmoviesapp.R;
 import mx.saudade.popularmoviesapp.adapters.AppAdapter;
 import mx.saudade.popularmoviesapp.adapters.MovieAdapter;
 import mx.saudade.popularmoviesapp.models.Results;
+import mx.saudade.popularmoviesapp.utils.ListViewUtil;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -40,9 +42,10 @@ public class AppCallback<T> implements Callback<Results<T>> {
 
     @Override
     public void success(Results<T> results, Response response) {
-        Log.v(TAG, "sucess: " + results.toString());
+        Log.v(TAG, "success: " + results.getResults().size() + " " + results.toString());
         adapter.setResults(results.getResults());
         view.setAdapter(adapter);
+
         notificationView.setVisibility(View.GONE);
     }
 

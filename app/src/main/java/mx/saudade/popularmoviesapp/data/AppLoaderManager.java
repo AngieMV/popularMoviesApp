@@ -5,9 +5,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
@@ -54,6 +51,8 @@ public class AppLoaderManager {
             movie.setVoteAverage(cursor.getFloat(AppContract.MovieEntry.INDEX_COLUMN_VOTE_AVERAGE));
         }
         cursor.close();
+
+        Log.v(TAG, "getMovie: " + movie);
         return movie;
     }
 
@@ -82,13 +81,22 @@ public class AppLoaderManager {
             } while(cursor.moveToNext());
         }
         cursor.close();
+
+        Log.v(TAG, "getMovies: " + movies);
         return movies;
     }
 
     public long insertMovie(Movie movie) {
-        if (movie == null) {
+
+        if (movie == null || StringUtils.isEmpty(movie.get_Id())) {
             return 0;
         }
+
+        Movie m = getMovie(movie.get_Id());
+        if(m != null) {
+            return 0;
+        }
+
         ContentValues values = new ContentValues();
         values.put(AppContract.MovieEntry._ID, movie.getId());
         values.put(AppContract.MovieEntry.COLUMN_TITLE, movie.getTitle());
@@ -99,6 +107,8 @@ public class AppLoaderManager {
         values.put(AppContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
 
         Uri insertedUri = context.getContentResolver().insert(AppContract.MovieEntry.CONTENT_URI, values);
+
+        Log.v(TAG, "insertMovie: " + insertedUri);
         return ContentUris.parseId(insertedUri);
     }
 
@@ -118,10 +128,18 @@ public class AppLoaderManager {
             moviesArray[i].put(AppContract.MovieEntry.COLUMN_POPULARITY, movie.getPopularity());
             moviesArray[i].put(AppContract.MovieEntry.COLUMN_VOTE_AVERAGE, movie.getVoteAverage());
         }
-        return context.getContentResolver().bulkInsert(AppContract.MovieEntry.CONTENT_URI, moviesArray);
+
+        long createdRows = context.getContentResolver().bulkInsert(AppContract.MovieEntry.CONTENT_URI, moviesArray);
+        Log.v(TAG, "insertMovies: " + createdRows);
+        return createdRows;
     }
 
     public int deleteMovie(String movieId) {
+        if(StringUtils.isEmpty(movieId)) {
+            return 0;
+        }
+
+        Log.v(TAG, "deleteMovie: " + movieId);
         return context.getContentResolver().delete(AppContract.MovieEntry.CONTENT_URI
                 , AppContract.MovieEntry._ID + " = ?"
                 , new String[]{movieId});
@@ -150,6 +168,8 @@ public class AppLoaderManager {
             } while(cursor.moveToNext());
         }
         cursor.close();
+
+        Log.v(TAG, "getReviews: " + reviews);
         return reviews;
     }
 
@@ -166,10 +186,14 @@ public class AppLoaderManager {
             reviewsArray[i].put(AppContract.ReviewEntry.COLUMN_AUTHOR, review.getAuthor());
             reviewsArray[i].put(AppContract.ReviewEntry.COLUMN_URL, review.getUrl());
         }
-        return context.getContentResolver().bulkInsert(AppContract.ReviewEntry.CONTENT_URI, reviewsArray);
+
+        long createdRows = context.getContentResolver().bulkInsert(AppContract.ReviewEntry.CONTENT_URI, reviewsArray);
+        Log.v(TAG, "insertReviews: " + createdRows);
+        return createdRows;
     }
 
     public int deleteReviews(String movieId) {
+        Log.v(TAG, "deleteReviews: " + movieId);
         return context.getContentResolver().delete(AppContract.ReviewEntry.CONTENT_URI
                 , AppContract.ReviewEntry.COLUMN_ID_MOVIE + " = ?"
                 , new String[]{movieId});
@@ -198,6 +222,8 @@ public class AppLoaderManager {
             } while(cursor.moveToNext());
         }
         cursor.close();
+
+        Log.v(TAG, "getVideos: " + videos);
         return videos;
     }
 
@@ -214,16 +240,30 @@ public class AppLoaderManager {
             videosArray[i].put(AppContract.VideoEntry.COLUMN_NAME, video.getName());
             videosArray[i].put(AppContract.VideoEntry.COLUMN_SITE, video.getSite());
         }
-        return context.getContentResolver().bulkInsert(AppContract.VideoEntry.CONTENT_URI, videosArray);
+        long id = context.getContentResolver().bulkInsert(AppContract.VideoEntry.CONTENT_URI, videosArray);
+
+        Log.v(TAG, "insertVideos: " + id);
+        return id;
     }
 
     public int deleteVideos(String movieId) {
+        if (StringUtils.isEmpty(movieId)) {
+            return 0;
+        }
+
+        Log.v(TAG, "deleteVideos: " + movieId);
         return context.getContentResolver().delete(AppContract.VideoEntry.CONTENT_URI
                 , AppContract.VideoEntry.COLUMN_ID_MOVIE + " = ?"
                 , new String[]{movieId});
     }
 
-    public void deleteAllMovie(String movieId) {
+    public void insertAllMovieInfo(Movie movie, List<Review> reviews, List<Video> videos) {
+        insertMovie(movie);
+        insertReviews(movie.get_Id(), reviews);
+        insertVideos(movie.get_Id(), videos);
+    }
+
+    public void deleteAllMovieInfo(String movieId) {
         int videosDeleted = deleteVideos(movieId);
         int reviewsDeleted = deleteReviews(movieId);
         int moviesDeleted = deleteMovie(movieId);
