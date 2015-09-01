@@ -107,6 +107,41 @@ public class AppProvider extends ContentProvider {
     }
 
     @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        final int match = uriMatcher.match(uri);
+
+        switch(match) {
+            case MOVIE:
+                return setTransaction(db, AppContract.MovieEntry.TABLE_NAME, uri, values);
+            case REVIEW:
+                return setTransaction(db, AppContract.ReviewEntry.TABLE_NAME, uri, values);
+            case VIDEO:
+                return setTransaction(db, AppContract.VideoEntry.TABLE_NAME, uri, values);
+            default:
+                return super.bulkInsert(uri, values);
+        }
+    }
+
+    private int setTransaction(SQLiteDatabase db, String tableName, Uri uri, ContentValues[] values) {
+        db.beginTransaction();
+        int count = 0;
+        try {
+            for (ContentValues value : values) {
+                long id = db.insert(tableName, null, value);
+                if (id != -1) {
+                    count++;
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
+    }
+
+    @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         final SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
         final int match = uriMatcher.match(uri);
@@ -141,6 +176,8 @@ public class AppProvider extends ContentProvider {
         final String authority = AppContract.CONTENT_AUTHORITY;
 
         matcher.addURI(authority, AppContract.PATH_MOVIE, MOVIE);
+        matcher.addURI(authority, AppContract.PATH_REVIEW, REVIEW);
+        matcher.addURI(authority, AppContract.PATH_VIDEO, VIDEO);
         matcher.addURI(authority, AppContract.PATH_REVIEW + "/*", REVIEW);
         matcher.addURI(authority, AppContract.PATH_VIDEO + "/*", VIDEO);
 

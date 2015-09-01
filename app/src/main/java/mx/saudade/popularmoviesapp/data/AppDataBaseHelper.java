@@ -48,7 +48,7 @@ public class AppDataBaseHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_VIDEO_TABLE =
             "CREATE TABLE " + VideoEntry.TABLE_NAME + " (" +
                 VideoEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                VideoEntry.COLUMN_ID_MOVIE + "INTEGER, " +
+                VideoEntry.COLUMN_ID_MOVIE + " INTEGER, " +
                 VideoEntry.COLUMN_KEY + " VARCHAR(50), " +
                 VideoEntry.COLUMN_NAME + " VARCHAR(50), "+
                 VideoEntry.COLUMN_SITE + " VARCHAR(50), " +

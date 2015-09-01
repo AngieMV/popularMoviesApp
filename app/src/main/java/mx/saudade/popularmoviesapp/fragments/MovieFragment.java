@@ -4,6 +4,7 @@ package mx.saudade.popularmoviesapp.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +12,18 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mx.saudade.popularmoviesapp.R;
 import mx.saudade.popularmoviesapp.activities.DetailActivity;
 import mx.saudade.popularmoviesapp.adapters.MovieAdapter;
+import mx.saudade.popularmoviesapp.data.AppLoaderManager;
 import mx.saudade.popularmoviesapp.models.Manager;
 import mx.saudade.popularmoviesapp.models.Movie;
 import mx.saudade.popularmoviesapp.models.Results;
+import mx.saudade.popularmoviesapp.models.Review;
+import mx.saudade.popularmoviesapp.models.Video;
 
 public class MovieFragment extends Fragment{
 
@@ -55,7 +60,71 @@ public class MovieFragment extends Fragment{
         if(savedInstanceState != null) {
             movies = ((Results<Movie>) savedInstanceState.getSerializable(ID_MOVIES)).getResults();
         }
+
+        test();
         return rootView;
+    }
+
+    public void test() {
+        AppLoaderManager manager = new AppLoaderManager(this.getActivity());
+
+        //delete
+        manager.deleteAllMovie("123");
+        manager.deleteAllMovie("456");
+
+        //insert movie
+        Movie movie = new Movie();
+        movie.setId(123);
+        movie.setTitle("title");
+        movie.setOverview("overview");
+        movie.setReleaseDate("2015-01-23");
+        movie.setPosterPath("path");
+        movie.setPopularity((float) 12.2);
+        movie.setVoteAverage(9);
+
+        Log.v(TAG, "id inserción: " + manager.insertMovie(movie));
+        Movie movieDB =  manager.getMovie("123");
+        Log.v(TAG, movieDB == null ? "no se obtuvo una pelicula" : movieDB.toString());
+
+        //insert movies
+        List<Movie> movies = new ArrayList<Movie>();
+        movie.setId(456);
+        movies.add(movie);
+        Log.v(TAG, "inserted movies: " + manager.insertMovies(movies));
+        List<Movie> moviesDB = manager.getMovies();
+        Log.v(TAG, moviesDB == null ? "no se obtuvieron peliculas" : moviesDB.toString());
+
+        //insert reviews
+        List<Review> reviews = new ArrayList<Review>();
+        Review review = new Review();
+        review.setContent("content");
+        review.setAuthor("author");
+        review.setUrl("url");
+        reviews.add(review);
+        Review review2 = new Review();
+        review2.setContent("content2");
+        review2.setAuthor("author2");
+        review2.setUrl("url2");
+        reviews.add(review2);
+
+        Log.v(TAG, "inserted reviews " + manager.insertReviews("123", reviews));
+        List<Review> reviewsDB = manager.getReviews("123");
+
+        Log.v(TAG, reviewsDB == null ? "no se obtuvieron revisiones" : reviewsDB.size() + " " + reviewsDB.toString());
+
+        //insert videos
+        List<Video> videos = new ArrayList<Video>();
+        Video video = new Video();
+        video.setKey("key");
+        video.setName("name");
+        video.setSite("site");
+        videos.add(video);
+
+        Log.v(TAG, "inserted videos " + manager.insertVideos("123", videos));
+        List<Video> videosDB = manager.getVideos("123");
+        Log.v(TAG, videosDB == null ? "no se obtuvieron vídeos" : videosDB.size() + " " + videosDB.toString());
+
+
     }
 
     @Override

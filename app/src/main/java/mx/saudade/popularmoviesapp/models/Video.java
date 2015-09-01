@@ -55,6 +55,18 @@ public class Video implements Serializable {
         return type;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
     public String getUrl() {
         if (StringUtils.isEmpty(key)) {
             return null;

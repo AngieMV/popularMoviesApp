@@ -33,6 +33,18 @@ public class Review implements Serializable {
         return url;
     }
 
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
     @Override
     public String toString() {
         return new ToStringBuilder(this)
