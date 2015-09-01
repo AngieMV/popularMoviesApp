@@ -22,7 +22,7 @@ import mx.saudade.popularmoviesapp.models.Video;
 /**
  * Created by angelicamendezvega on 8/31/15.
  */
-public class AppLoaderManager implements LoaderManager.LoaderCallbacks<Cursor>  {
+public class AppLoaderManager {
 
     private static final String TAG = AppLoaderManager.class.getSimpleName();
 
@@ -230,18 +230,4 @@ public class AppLoaderManager implements LoaderManager.LoaderCallbacks<Cursor>  
         Log.v(TAG, "Movies deleted: " + moviesDeleted + " reviews deleted: " + reviewsDeleted + " videos deleted: " + videosDeleted);
     }
 
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-
-    }
 }

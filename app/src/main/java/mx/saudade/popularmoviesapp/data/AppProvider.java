@@ -178,16 +178,8 @@ public class AppProvider extends ContentProvider {
         matcher.addURI(authority, AppContract.PATH_MOVIE, MOVIE);
         matcher.addURI(authority, AppContract.PATH_REVIEW, REVIEW);
         matcher.addURI(authority, AppContract.PATH_VIDEO, VIDEO);
-        matcher.addURI(authority, AppContract.PATH_REVIEW + "/*", REVIEW);
-        matcher.addURI(authority, AppContract.PATH_VIDEO + "/*", VIDEO);
 
         return matcher;
-    }
-
-    @Override
-    public void shutdown() {
-        dataBaseHelper.close();
-        super.shutdown();
     }
 
 }
