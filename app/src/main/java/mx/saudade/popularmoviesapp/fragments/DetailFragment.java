@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -42,7 +43,7 @@ public class DetailFragment extends Fragment {
 
     private static final String TAG = DetailFragment.class.getSimpleName();
 
-    AppLoaderManager manager;
+    private AppLoaderManager manager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,13 +71,22 @@ public class DetailFragment extends Fragment {
         inflater.inflate(R.menu.menu_detail, menu);
         ShareActionProvider provider = (ShareActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.action_share));
         ActionUtils.share(provider, getMovie().getShareMessage() + ">>>");
+
+        MenuItem favoriteItem = menu.findItem(R.id.action_favorite);
+
+        if(manager.getMovie(getMovie().get_Id()) == null) {
+            favoriteItem.setIcon(R.drawable.favorite_white_off);
+        } else {
+            favoriteItem.setIcon(R.drawable.favorite_white_on);
+        }
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_favorite) {
-            manager.insertAllMovieInfo(getMovie(), getReviews(), getVideos());
+            changeStateAsFavorite(item);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -117,8 +127,6 @@ public class DetailFragment extends Fragment {
                 ActionUtils.viewContent(getActivity(), video.getUrl());
             }
         });
-
-        ListViewUtil.setListViewHeightBasedOnChildren((getNestedListView(R.id.listView_reviews)));
     }
 
     private Movie getMovie() {
@@ -143,6 +151,25 @@ public class DetailFragment extends Fragment {
         List<Video> videos = ((VideoAdapter) getNestedListView(R.id.listView_trailers).getAdapter()).getResults().getResults();
         Log.v(TAG, videos.size() + " " + videos.toString());
         return  videos;
+    }
+
+    private void changeStateAsFavorite(MenuItem item) {
+        String message = "Info incomplete to save as favorite";
+        if (getMovie() == null || getVideos() == null || getReviews() == null) {
+            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            item.setIcon(R.drawable.favorite_white_off);
+        }
+
+        if (manager.getMovie(getMovie().get_Id()) == null) {
+            manager.insertAllMovieInfo(getMovie(), getReviews(), getVideos());
+            message = "Movie saved as favorite";
+            item.setIcon(R.drawable.favorite_white_on);
+        } else {
+            manager.deleteAllMovieInfo(getMovie().get_Id());
+            message = "Movie removed from favorites";
+            item.setIcon(R.drawable.favorite_white_off);
+        }
+        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     private String getTrailer() {
