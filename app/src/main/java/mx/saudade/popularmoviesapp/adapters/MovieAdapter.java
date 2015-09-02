@@ -41,7 +41,7 @@ public class MovieAdapter extends AppAdapter<Movie> {
         }
 
         Movie item = results.get(position);
-        holder.text.setText(((Movie) item).getOriginalTitle());
+        holder.text.setText(((Movie) item).getTitle());
 
         Picasso.with(context).load(item.getThumbPosterPath())
                 .placeholder(R.drawable.placeholder_movie_icon).into(holder.image);

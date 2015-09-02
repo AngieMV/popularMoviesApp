@@ -88,15 +88,29 @@ public class Manager {
         contentListView.evaluateResults(videos);
     }
 
-    public void invokeRetro(ContentListView<Movie> contentListView) {
+    public void getMovies(ContentListView<Movie> contentListView) {
+        if (isSetFavoritesMovies()) {
+            invokeDBMovies(contentListView);
+        } else {
+            invokeWebMovies(contentListView);
+        }
+    }
+
+    public void invokeDBMovies(ContentListView<Movie> contentListView) {
+        Log.v(TAG, "displayed from dataBase");
+        String order = getOrderPreference();
+        contentListView.evaluateResults(appLoaderManager.getMovies());
+    }
+
+    public void invokeWebMovies(ContentListView<Movie> contentListView) {
         if (!isOnline()) {
             Toast.makeText(context, context.getString(R.string.error_no_online), Toast.LENGTH_SHORT).show();
             return;
         }
-        invokeRetro(getOrderPreference(), contentListView);
+        invokeWebMovies(getOrderPreference(), contentListView);
     }
 
-    public void invokeRetro(String order, ContentListView<Movie> contentListView) {
+    public void invokeWebMovies(String order, ContentListView<Movie> contentListView) {
         Log.v(TAG, "invokeRetro " + order);
         getMoviesInterface().getMovies(order, API_KEY, "1", new AppCallback(contentListView));
     }
@@ -106,6 +120,12 @@ public class Manager {
                 .getString(context.getString(R.string.pref_sortby_key)
                         , context.getString(R.string.pref_sortby_default_value));
         return getCode(preference);
+    }
+
+    private boolean isSetFavoritesMovies() {
+        boolean preference = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getString(R.string.pref_fav_key)
+        , false);
+        return preference;
     }
 
     private String getCode(String selection) {

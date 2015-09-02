@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mx.saudade.popularmoviesapp.R;
@@ -81,6 +82,8 @@ public class ContentListView<T> extends LinearLayout implements IContentListView
 
     @Override
     public void error() {
+        adapter.setResults(new ArrayList<T>());
+        view.setAdapter(adapter);
         notificationView.setText(getContext().getString(R.string.error_no_result));
         notificationView.setVisibility(View.VISIBLE);
     }
