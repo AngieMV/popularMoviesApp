@@ -168,7 +168,26 @@ public class AppProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = dataBaseHelper.getWritableDatabase();
+        final int match = uriMatcher.match(uri);
+        int rowsUpdated = 0;
+        switch(match) {
+            case MOVIE:
+                rowsUpdated = db.update(AppContract.MovieEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case REVIEW:
+                rowsUpdated = db.update(AppContract.ReviewEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case VIDEO:
+                rowsUpdated = db.update(AppContract.VideoEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+        if (rowsUpdated != 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return rowsUpdated;
     }
 
     static UriMatcher buildUriMatcher() {
