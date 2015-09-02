@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:saudade="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
     android:layout_height="match_parent" android:padding="10dp">
 
     <ScrollView
@@ -63,10 +64,11 @@
                 android:text="@string/trailers"
                 android:layout_marginTop="10dp"/>
 
-            <mx.saudade.popularmoviesapp.utils.NestedListView
+            <mx.saudade.popularmoviesapp.views.ContentListView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/listView_trailers" />
+                android:id="@+id/trailersContentListView"
+                saudade:content_layout="@layout/dinamic_list"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -75,18 +77,11 @@
                 android:text="@string/reviews"
                 android:layout_marginTop="10dp"/>
 
-            <mx.saudade.popularmoviesapp.utils.NestedListView
+            <mx.saudade.popularmoviesapp.views.ContentListView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/listView_reviews" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/loading_content"
-                android:id="@+id/textView_loading"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true" />
+                android:id="@+id/reviewsContentListView"
+                saudade:content_layout="@layout/dinamic_list"/>
 
         </LinearLayout>
     </ScrollView>

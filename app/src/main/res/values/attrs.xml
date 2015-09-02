@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="mx.saudade.popularmoviesapp.views.ContentListView">
+        <attr name="content_layout" format="integer"/>
+    </declare-styleable>
+</resources>

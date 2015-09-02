@@ -30,8 +30,7 @@ import mx.saudade.popularmoviesapp.models.Movie;
 import mx.saudade.popularmoviesapp.models.Review;
 import mx.saudade.popularmoviesapp.models.Video;
 import mx.saudade.popularmoviesapp.utils.ActionUtils;
-import mx.saudade.popularmoviesapp.utils.NestedListView;
-import mx.saudade.popularmoviesapp.views.ContentList;
+import mx.saudade.popularmoviesapp.views.ContentListView;
 
 /**
  * Created by angelicamendezvega on 8/5/15.
@@ -90,8 +89,8 @@ public class DetailFragment extends Fragment {
 
     public void loadContent() {
         Manager manager = new Manager(getActivity(), appLoaderManager);
-        manager.getReviews(getMovie(), getNestedListView(R.id.listView_reviews), getTextView(R.id.textView_loading));
-        manager.getVideos(getMovie(), getNestedListView(R.id.listView_trailers), getTextView(R.id.textView_loading));
+        manager.getReviews(getMovie(), getContentListView(R.id.reviewsContentListView));
+        manager.getVideos(getMovie(), getContentListView(R.id.trailersContentListView));
     }
 
     public void displayInfo() {
@@ -108,7 +107,8 @@ public class DetailFragment extends Fragment {
         getTextView(R.id.detail_rating).setText(getMovie().getVoteAverageMessage());
         getTextView(R.id.detail_sinopsis).setText(getMovie().getOverview());
 
-        getNestedListView(R.id.listView_reviews).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        getContentListView(R.id.reviewsContentListView).setAdapter(new ReviewAdapter(getActivity()));
+        getContentListView(R.id.reviewsContentListView).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Review review = (Review) parent.getAdapter().getItem(position);
@@ -116,13 +116,15 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        getNestedListView(R.id.listView_trailers).setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        getContentListView(R.id.trailersContentListView).setAdapter(new VideoAdapter(getActivity()));
+        getContentListView(R.id.trailersContentListView).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Video video = (Video) parent.getAdapter().getItem(position);
                 ActionUtils.viewContent(getActivity(), video.getUrl());
             }
         });
+
     }
 
     private Movie getMovie() {
@@ -130,21 +132,21 @@ public class DetailFragment extends Fragment {
     }
 
     private List<Review> getReviews() {
-        if(getNestedListView(R.id.listView_reviews).getAdapter() == null
-                || ((ReviewAdapter) getNestedListView(R.id.listView_reviews).getAdapter()).getResults() == null) {
+        if(getContentListView(R.id.reviewsContentListView).getAdapter() == null
+                || ((ReviewAdapter) getContentListView(R.id.reviewsContentListView).getAdapter()).getResults() == null) {
             return null;
         }
-        List<Review> reviews = ((ReviewAdapter) getNestedListView(R.id.listView_reviews).getAdapter()).getResults().getResults();
+        List<Review> reviews = ((ReviewAdapter) getContentListView(R.id.reviewsContentListView).getAdapter()).getResults().getResults();
         Log.v(TAG, reviews.size() + " " + reviews.toString());
         return reviews;
     }
 
     private List<Video> getVideos() {
-        if(getNestedListView(R.id.listView_trailers).getAdapter() == null
-                || ((VideoAdapter) getNestedListView(R.id.listView_trailers).getAdapter()).getResults() == null) {
+        if(getContentListView(R.id.trailersContentListView).getAdapter() == null
+                || ((VideoAdapter) getContentListView(R.id.trailersContentListView).getAdapter()).getResults() == null) {
             return null;
         }
-        List<Video> videos = ((VideoAdapter) getNestedListView(R.id.listView_trailers).getAdapter()).getResults().getResults();
+        List<Video> videos = ((VideoAdapter) getContentListView(R.id.trailersContentListView).getAdapter()).getResults().getResults();
         Log.v(TAG, videos.size() + " " + videos.toString());
         return  videos;
     }
@@ -183,8 +185,8 @@ public class DetailFragment extends Fragment {
         return (ImageView) getView().findViewById(id);
     }
 
-    private NestedListView getNestedListView(int id) {
-        return (NestedListView) getView().findViewById(id);
+    private ContentListView getContentListView(int id) {
+        return (ContentListView) getView().findViewById(id);
     }
 
 }

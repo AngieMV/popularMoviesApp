@@ -1,4 +1,4 @@
-package mx.saudade.popularmoviesapp.utils;
+package mx.saudade.popularmoviesapp.views;
 
 import android.content.Context;
 import android.util.AttributeSet;

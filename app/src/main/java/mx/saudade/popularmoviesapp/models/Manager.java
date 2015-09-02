@@ -1,14 +1,10 @@
 package mx.saudade.popularmoviesapp.models;
 
-import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.View;
-import android.widget.AbsListView;
-import android.widget.GridView;
 import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,13 +12,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.List;
 
 import mx.saudade.popularmoviesapp.R;
-import mx.saudade.popularmoviesapp.adapters.MovieAdapter;
-import mx.saudade.popularmoviesapp.adapters.ReviewAdapter;
-import mx.saudade.popularmoviesapp.adapters.VideoAdapter;
 import mx.saudade.popularmoviesapp.callbacks.AppCallback;
 import mx.saudade.popularmoviesapp.data.AppLoaderManager;
 import mx.saudade.popularmoviesapp.interfaces.AppInterface;
-import mx.saudade.popularmoviesapp.views.ContentList;
+import mx.saudade.popularmoviesapp.views.ContentListView;
 import retrofit.RestAdapter;
 
 /**
@@ -55,59 +48,57 @@ public class Manager {
         return restAdapter.create(AppInterface.class);
     }
 
-    public void getReviews(Movie movie, AbsListView view, View notificationView) {
+    public void getReviews(Movie movie, ContentListView<Review> contentListView) {
         Log.v(TAG, "movieId: " + movie.getId());
         if (appLoaderManager.getMovie(movie.get_Id()) != null) {
-            Log.v(TAG, "displayed from dataBase");
-            invokeDBReviews(movie.get_Id(),  view, notificationView);
+            invokeDBReviews(movie.get_Id(), contentListView);
         } else {
-            Log.v(TAG, "displayed from web");
-            invokeWebReviews(movie.getId(), view, notificationView);
+            invokeWebReviews(movie.getId(), contentListView);
         }
     }
 
-    public void getVideos(Movie movie, AbsListView view, View notificationView) {
+    public void getVideos(Movie movie, ContentListView<Video> contentListView) {
         Log.v(TAG, "movieId: " + movie.getId());
         if (appLoaderManager.getMovie(movie.get_Id()) != null) {
-            Log.v(TAG, "displayed from dataBase");
-            invokeDBVideos(movie.get_Id(), view, notificationView);
+            invokeDBVideos(movie.get_Id(), contentListView);
         } else {
-            Log.v(TAG, "displayed from web");
-            invokeWebVideos(movie.getId(), view, notificationView);
+            invokeWebVideos(movie.getId(), contentListView);
         }
     }
 
-    public void invokeWebReviews(int movieId, AbsListView view, View notificationView) {
-        getMoviesInterface().getReviews(movieId, API_KEY, new AppCallback(getReviewContentList(view, notificationView)));
+    public void invokeWebReviews(int movieId, ContentListView<Review> contentListView) {
+        Log.v(TAG, "displayed from web");
+        getMoviesInterface().getReviews(movieId, API_KEY, new AppCallback(contentListView));
     }
 
-    public void  invokeDBReviews(String movieId, AbsListView view, View notificationView) {
+    public void  invokeDBReviews(String movieId, ContentListView<Review> contentListView) {
+        Log.v(TAG, "displayed from dataBase");
         List<Review> reviews = appLoaderManager.getReviews(movieId);
-        getReviewContentList(view, notificationView).controlState(reviews);
+        contentListView.evaluateResults(reviews);
     }
 
-    public void invokeWebVideos(int movieId, AbsListView view, View notificationView) {
-        getMoviesInterface().getVideos(movieId, API_KEY, new AppCallback<Video>(getVideoContentList(view, notificationView)));
+    public void invokeWebVideos(int movieId, ContentListView<Video> contentListView) {
+        Log.v(TAG, "displayed from web");
+        getMoviesInterface().getVideos(movieId, API_KEY, new AppCallback<Video>(contentListView));
     }
 
-    public void invokeDBVideos(String movieId, AbsListView view, View notificationView) {
+    public void invokeDBVideos(String movieId, ContentListView<Video> contentListView) {
+        Log.v(TAG, "displayed from dataBase");
         List<Video> videos = appLoaderManager.getVideos(movieId);
-        getVideoContentList(view, notificationView).controlState(videos);
+        contentListView.evaluateResults(videos);
     }
 
-    public void invokeRetro(AbsListView view, View notificationView) {
+    public void invokeRetro(ContentListView<Movie> contentListView) {
         if (!isOnline()) {
             Toast.makeText(context, context.getString(R.string.error_no_online), Toast.LENGTH_SHORT).show();
             return;
         }
-
-        invokeRetro(getOrderPreference(), view, notificationView);
+        invokeRetro(getOrderPreference(), contentListView);
     }
 
-    public void invokeRetro(String order, AbsListView view, View notificationView) {
+    public void invokeRetro(String order, ContentListView<Movie> contentListView) {
         Log.v(TAG, "invokeRetro " + order);
-        ContentList<Movie> contentList = new ContentList<Movie>(context, (GridView) view, new MovieAdapter(context), notificationView);
-        getMoviesInterface().getMovies(order, API_KEY, "1", new AppCallback(contentList));
+        getMoviesInterface().getMovies(order, API_KEY, "1", new AppCallback(contentListView));
     }
 
     private String getOrderPreference() {
@@ -130,14 +121,6 @@ public class Manager {
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
-    private ContentList<Review> getReviewContentList(AbsListView view, View notificationView) {
-        return new ContentList<Review>(context, view, new ReviewAdapter(context), notificationView);
-    }
-
-    private ContentList<Video> getVideoContentList(AbsListView view, View notificationView) {
-        return new ContentList<Video>(context, view, new VideoAdapter(context), notificationView);
     }
 
 }
