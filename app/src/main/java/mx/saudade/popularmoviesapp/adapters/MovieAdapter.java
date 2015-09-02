@@ -21,6 +21,8 @@ import mx.saudade.popularmoviesapp.models.Movie;
  */
 public class MovieAdapter extends AppAdapter<Movie> {
 
+    private int indiceSeleccionado = -1;
+
     public MovieAdapter(Context context) {
         super(context);
     }
@@ -46,8 +48,26 @@ public class MovieAdapter extends AppAdapter<Movie> {
         Picasso.with(context).load(item.getThumbPosterPath())
                 .placeholder(R.drawable.placeholder_movie_icon).into(holder.image);
 
+        if (position == indiceSeleccionado) {
+            holder.layout.setBackgroundColor(getColor(R.color.button_background_on));
+            holder.text.setBackgroundColor(getColor(R.color.button_background_on));
+        } else {
+            holder.layout.setBackgroundColor(getColor(R.color.button_background_off));
+            holder.text.setBackgroundColor(getColor(R.color.button_background_off));
+        }
+
         return convertView;
     }
+
+    public void setSelectedIndex(int ind) {
+        indiceSeleccionado = ind;
+        notifyDataSetChanged();
+    }
+
+    protected int getColor(int id) {
+        return context.getResources().getColor(id);
+    }
+
 
     static class ViewHolder {
 
