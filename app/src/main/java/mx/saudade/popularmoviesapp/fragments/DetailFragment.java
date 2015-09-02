@@ -14,13 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
-
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -33,8 +30,8 @@ import mx.saudade.popularmoviesapp.models.Movie;
 import mx.saudade.popularmoviesapp.models.Review;
 import mx.saudade.popularmoviesapp.models.Video;
 import mx.saudade.popularmoviesapp.utils.ActionUtils;
-import mx.saudade.popularmoviesapp.utils.ListViewUtil;
 import mx.saudade.popularmoviesapp.utils.NestedListView;
+import mx.saudade.popularmoviesapp.views.ContentList;
 
 /**
  * Created by angelicamendezvega on 8/5/15.
@@ -43,12 +40,12 @@ public class DetailFragment extends Fragment {
 
     private static final String TAG = DetailFragment.class.getSimpleName();
 
-    private AppLoaderManager manager;
+    private AppLoaderManager appLoaderManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        manager = new AppLoaderManager(getActivity());
+        appLoaderManager = new AppLoaderManager(getActivity());
     }
 
     @Override
@@ -73,8 +70,7 @@ public class DetailFragment extends Fragment {
         ActionUtils.share(provider, getMovie().getShareMessage() + ">>>");
 
         MenuItem favoriteItem = menu.findItem(R.id.action_favorite);
-
-        if(manager.getMovie(getMovie().get_Id()) == null) {
+        if(appLoaderManager.getMovie(getMovie().get_Id()) == null) {
             favoriteItem.setIcon(R.drawable.favorite_white_off);
         } else {
             favoriteItem.setIcon(R.drawable.favorite_white_on);
@@ -93,9 +89,9 @@ public class DetailFragment extends Fragment {
     }
 
     public void loadContent() {
-        Manager manager = new Manager(getActivity());
-        manager.invokeReviews(getMovie().getId(), getNestedListView(R.id.listView_reviews), getTextView(R.id.textView_loading));
-        manager.invokeVideos(getMovie().getId(), getNestedListView(R.id.listView_trailers), getTextView(R.id.textView_loading));
+        Manager manager = new Manager(getActivity(), appLoaderManager);
+        manager.getReviews(getMovie(), getNestedListView(R.id.listView_reviews), getTextView(R.id.textView_loading));
+        manager.getVideos(getMovie(), getNestedListView(R.id.listView_trailers), getTextView(R.id.textView_loading));
     }
 
     public void displayInfo() {
@@ -160,12 +156,12 @@ public class DetailFragment extends Fragment {
             item.setIcon(R.drawable.favorite_white_off);
         }
 
-        if (manager.getMovie(getMovie().get_Id()) == null) {
-            manager.insertAllMovieInfo(getMovie(), getReviews(), getVideos());
+        if (appLoaderManager.getMovie(getMovie().get_Id()) == null) {
+            appLoaderManager.insertAllMovieInfo(getMovie(), getReviews(), getVideos());
             message = "Movie saved as favorite";
             item.setIcon(R.drawable.favorite_white_on);
         } else {
-            manager.deleteAllMovieInfo(getMovie().get_Id());
+            appLoaderManager.deleteAllMovieInfo(getMovie().get_Id());
             message = "Movie removed from favorites";
             item.setIcon(R.drawable.favorite_white_off);
         }

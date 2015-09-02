@@ -55,7 +55,7 @@ public class MovieFragment extends Fragment{
             }
         });
 
-        manager = new Manager(getActivity());
+        manager = new Manager(getActivity(), null);
 
         if(savedInstanceState != null) {
             movies = ((Results<Movie>) savedInstanceState.getSerializable(ID_MOVIES)).getResults();

@@ -13,6 +13,7 @@ import mx.saudade.popularmoviesapp.adapters.AppAdapter;
 import mx.saudade.popularmoviesapp.adapters.MovieAdapter;
 import mx.saudade.popularmoviesapp.models.Results;
 import mx.saudade.popularmoviesapp.utils.ListViewUtil;
+import mx.saudade.popularmoviesapp.views.ContentList;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -24,35 +25,21 @@ public class AppCallback<T> implements Callback<Results<T>> {
 
     protected static final String TAG = AppCallback.class.getSimpleName();
 
-    protected Context context;
+    private ContentList contentList;
 
-    protected AbsListView view;
-
-    protected View notificationView;
-
-    protected AppAdapter adapter;
-
-    public AppCallback(Context context, AbsListView view, View notificationView, AppAdapter adapter) {
-        this.context = context;
-        this.view = view;
-        this.adapter = adapter;
-        this.notificationView = notificationView;
-        this.notificationView.setVisibility(View.VISIBLE);
+    public AppCallback( ContentList contentList) {
+        this.contentList = contentList;
     }
 
     @Override
     public void success(Results<T> results, Response response) {
         Log.v(TAG, "success: " + results.getResults().size() + " " + results.toString());
-        adapter.setResults(results.getResults());
-        view.setAdapter(adapter);
-
-        notificationView.setVisibility(View.GONE);
+        contentList.show(results.getResults());
     }
 
     @Override
     public void failure(RetrofitError error) {
         Log.v(TAG, "failure: " + error.toString());
-        Toast.makeText(context, context.getString(R.string.error_no_result), Toast.LENGTH_SHORT).show();
-        notificationView.setVisibility(View.GONE);
+        contentList.error();
     }
 }
