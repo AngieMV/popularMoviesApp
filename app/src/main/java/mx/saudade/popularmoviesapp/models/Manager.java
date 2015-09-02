@@ -99,7 +99,7 @@ public class Manager {
     public void invokeDBMovies(ContentListView<Movie> contentListView) {
         Log.v(TAG, "displayed from dataBase");
         String order = getOrderPreference();
-        contentListView.evaluateResults(appLoaderManager.getMovies());
+        contentListView.evaluateResults(appLoaderManager.getMovies(order));
     }
 
     public void invokeWebMovies(ContentListView<Movie> contentListView) {

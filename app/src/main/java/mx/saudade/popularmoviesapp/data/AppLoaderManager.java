@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx.saudade.popularmoviesapp.R;
 import mx.saudade.popularmoviesapp.models.Movie;
 import mx.saudade.popularmoviesapp.models.Review;
 import mx.saudade.popularmoviesapp.models.Video;
@@ -57,6 +58,12 @@ public class AppLoaderManager {
     }
 
     public List<Movie> getMovies() {
+        return getMovies(null);
+    }
+
+    public List<Movie> getMovies(String selection) {
+        String order = selection == null ? null : getOrder(selection);
+        Log.v(TAG, "selection: " + selection + " new order " + order);
 
         List<Movie> movies = null;
         Cursor cursor = context.getContentResolver().query(
@@ -64,7 +71,7 @@ public class AppLoaderManager {
                 AppContract.MovieEntry.COMPLETE_PROJECTION,
                 null,
                 null,
-                null
+                order
         );
         if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
             movies = new ArrayList<Movie>();
@@ -84,6 +91,14 @@ public class AppLoaderManager {
 
         Log.v(TAG, "getMovies: " + movies);
         return movies;
+    }
+
+    private String getOrder(String selection) {
+        if (selection.equalsIgnoreCase("popularity.desc")) {
+            return AppContract.MovieEntry.TABLE_NAME + "." + AppContract.MovieEntry.COLUMN_POPULARITY + " DESC";
+        } else {
+            return AppContract.MovieEntry.TABLE_NAME + "." + AppContract.MovieEntry.COLUMN_VOTE_AVERAGE + " DESC";
+        }
     }
 
     public long insertMovie(Movie movie) {
