@@ -67,6 +67,7 @@ public class ContentListView<T> extends LinearLayout implements IContentListView
     @Override
     public void setAdapter(AppAdapter adapter) {
         this.adapter = adapter;
+        this.view.setAdapter(adapter);
     }
 
     public AppAdapter getAdapter() {
