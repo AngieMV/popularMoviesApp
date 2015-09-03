@@ -165,13 +165,12 @@ public class Movie implements Serializable {
         this.voteAverage = voteAverage;
     }
 
-    public String getShareMessage() {
+    public String getShareMessage(String trailer) {
         StringBuilder message = new StringBuilder();
         message.append("Check ")
                 .append(this.getOriginalTitle())
-                .append(" (")
-                .append(this.getReleaseDate())
-                .append("). From Popular Movies App");
+                .append(" " + trailer)
+                .append(" From Popular Movies App");
         return message.toString();
     }
 

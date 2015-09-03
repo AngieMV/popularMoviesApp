@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.List;
 
 import mx.saudade.popularmoviesapp.R;
@@ -65,8 +67,16 @@ public class DetailFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_detail, menu);
-        ShareActionProvider provider = (ShareActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.action_share));
-        ActionUtils.share(provider, getMovie().getShareMessage() + ">>>");
+        final ShareActionProvider provider = (ShareActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.action_share));
+        ActionUtils.share(provider, getMovie().getShareMessage(getTrailer()));
+        provider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
+            @Override
+            public boolean onShareTargetSelected(ShareActionProvider shareActionProvider, Intent intent) {
+                ActionUtils.share(shareActionProvider, getMovie().getShareMessage(getTrailer()));
+                return false;
+            }
+        });
+
 
         MenuItem favoriteItem = menu.findItem(R.id.action_favorite);
         if(appLoaderManager.getMovie(getMovie().get_Id()) == null) {
@@ -172,9 +182,9 @@ public class DetailFragment extends Fragment {
 
     private String getTrailer() {
         Log.v(TAG, "GET TRAILER");
-        Video video = getVideos().get(0);
+        Video video = getVideos().size() > 0 ? getVideos().get(0) : null;
         Log.v(TAG, "VIDEO " + video);
-        return video == null? null: video.getUrl();
+        return video == null? StringUtils.EMPTY : video.getUrl();
     }
 
     private TextView getTextView(int id) {
