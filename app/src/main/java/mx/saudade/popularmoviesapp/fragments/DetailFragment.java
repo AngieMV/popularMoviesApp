@@ -142,21 +142,13 @@ public class DetailFragment extends Fragment {
     }
 
     private List<Review> getReviews() {
-        if(getContentListView(R.id.reviewsContentListView).getAdapter() == null
-                || ((ReviewAdapter) getContentListView(R.id.reviewsContentListView).getAdapter()).getResults() == null) {
-            return null;
-        }
-        List<Review> reviews = ((ReviewAdapter) getContentListView(R.id.reviewsContentListView).getAdapter()).getResults().getResults();
+        List<Review> reviews = getContentListView(R.id.reviewsContentListView).getResults();
         Log.v(TAG, reviews.size() + " " + reviews.toString());
         return reviews;
     }
 
     private List<Video> getVideos() {
-        if(getContentListView(R.id.trailersContentListView).getAdapter() == null
-                || ((VideoAdapter) getContentListView(R.id.trailersContentListView).getAdapter()).getResults() == null) {
-            return null;
-        }
-        List<Video> videos = ((VideoAdapter) getContentListView(R.id.trailersContentListView).getAdapter()).getResults().getResults();
+        List<Video> videos = getContentListView(R.id.trailersContentListView).getResults();
         Log.v(TAG, videos.size() + " " + videos.toString());
         return  videos;
     }

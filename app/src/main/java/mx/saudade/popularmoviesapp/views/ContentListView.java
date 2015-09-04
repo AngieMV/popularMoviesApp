@@ -2,6 +2,7 @@ package mx.saudade.popularmoviesapp.views;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Bundle;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +17,18 @@ import java.util.List;
 import mx.saudade.popularmoviesapp.R;
 import mx.saudade.popularmoviesapp.adapters.AppAdapter;
 import mx.saudade.popularmoviesapp.interfaces.IContentListView;
+import mx.saudade.popularmoviesapp.models.Results;
 
 /**
  * Created by angie on 9/1/15.
  */
 public class ContentListView<T> extends LinearLayout implements IContentListView {
+
+    private static final String TAG = ContentListView.class.getSimpleName();
+
+    private static final String KEY_LIST_POSITION = TAG + "_POSITION";
+
+    private static final String KEY_STATE = TAG + "_KEY_STATE";
 
     private AbsListView view;
 
@@ -57,7 +65,7 @@ public class ContentListView<T> extends LinearLayout implements IContentListView
         this.notificationView.setVisibility(View.VISIBLE);
     }
 
-    public void setLayout(AttributeSet attrs) {
+    private void setLayout(AttributeSet attrs) {
         TypedArray a = getContext().obtainStyledAttributes(attrs,
                 R.styleable.mx_saudade_popularmoviesapp_views_ContentListView, 0, 0);
         layoutId = a.getResourceId(R.styleable.mx_saudade_popularmoviesapp_views_ContentListView_content_layout, 0);
@@ -67,18 +75,21 @@ public class ContentListView<T> extends LinearLayout implements IContentListView
     @Override
     public void setAdapter(AppAdapter adapter) {
         this.adapter = adapter;
-        this.view.setAdapter(adapter);
-    }
-
-    public AppAdapter getAdapter() {
-        return adapter;
+        this.view.setAdapter(this.adapter);
     }
 
     @Override
-    public void show(List results) {
+    public void setResults(List results) {
         adapter.setResults(results);
         view.setAdapter(adapter);
         notificationView.setVisibility(View.GONE);
+    }
+
+    public List getResults() {
+        if (adapter == null || adapter.getResults() == null) {
+            return new ArrayList();
+        }
+        return adapter.getResults().getResults();
     }
 
     @Override
@@ -94,13 +105,34 @@ public class ContentListView<T> extends LinearLayout implements IContentListView
         if (results == null || results.size() == 0) {
             error();
         } else {
-            show(results);
+            setResults(results);
         }
     }
 
     @Override
     public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {
         this.view.setOnItemClickListener(listener);
+    }
+
+    public void restoreState(Bundle bundle, AppAdapter adapter) {
+        if(this.adapter == null)
+            setAdapter(adapter);
+
+        if (bundle == null) {
+            return;
+        }
+        List results = ((Results) bundle.getSerializable(KEY_STATE)).getResults();
+        setResults(results);
+        view.setSelection(bundle.getInt(KEY_LIST_POSITION));
+    }
+
+    public void saveState(Bundle bundle) {
+        if (bundle == null) {
+            return;
+        }
+
+        bundle.putSerializable(KEY_STATE, this.adapter.getResults());
+        bundle.putInt(KEY_LIST_POSITION, view.getFirstVisiblePosition());
     }
 
 }

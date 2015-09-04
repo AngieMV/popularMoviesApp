@@ -24,7 +24,7 @@ public class AppCallback<T> implements Callback<Results<T>> {
     @Override
     public void success(Results<T> results, Response response) {
         Log.v(TAG, "success: " + results.getResults().size() + " " + results.toString());
-        ContentListView.show(results.getResults());
+        ContentListView.setResults(results.getResults());
     }
 
     @Override

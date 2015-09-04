@@ -13,7 +13,7 @@ public interface IContentListView<T>  {
 
     void setAdapter(AppAdapter<T> adapter);
 
-    void show(List<T> results);
+    void setResults(List<T> results);
 
     void error();
 
