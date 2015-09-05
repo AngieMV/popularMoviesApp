@@ -180,12 +180,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void changeStateAsFavorite(MenuItem item) {
-        String message = "Info incomplete to save as favorite";
-        if (getMovie() == null || getVideos() == null || getReviews() == null) {
-            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-            item.setIcon(R.drawable.favorite_white_off);
-        }
-
+        String message = StringUtils.EMPTY;
         if (appLoaderManager.getMovie(getMovie().get_Id()) == null) {
             appLoaderManager.insertAllMovieInfo(getMovie(), getReviews(), getVideos());
             message = "Movie saved as favorite";

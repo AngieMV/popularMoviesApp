@@ -58,7 +58,7 @@ public class MovieFragment extends Fragment {
         });
         Log.v(TAG, "XXX onStart");
         List<Movie> results = getContentListView().getResults();
-        if (results.size() == 0 || manager.isStatusChanged()) {
+        if (results.size() == 0 || manager.isStatusChanged() || manager.isFavListChanged(results)) {
             Log.v(TAG, "XXX calling getMovies");
             manager.getMovies(getContentListView());
         }

@@ -150,4 +150,11 @@ public class Manager {
         return netInfo != null && netInfo.isConnectedOrConnecting();
     }
 
+    public boolean isFavListChanged(List results) {
+        if(!isSetFavoritesMovies()) {
+            return false;
+        }
+        return results.size() != appLoaderManager.getMovies().size();
+    }
+
 }
