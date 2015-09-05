@@ -21,9 +21,12 @@ public abstract class AppAdapter<T> extends BaseAdapter {
 
     protected int selectedIndex = INVALID_INDEX;
 
-    public AppAdapter(Context context) {
+    public final int IDENTIFIER;
+
+    public AppAdapter(Context context, int identifier) {
         this.context = context;
         results = new ArrayList<T>();
+        IDENTIFIER = identifier;
     }
 
     @Override

@@ -26,12 +26,13 @@ public class MovieFragment extends Fragment {
     private static final String TAG = MovieFragment.class.getSimpleName();
 
     private MovieAdapter adapter;
+
     private Manager manager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new MovieAdapter(getActivity());
+        adapter = new MovieAdapter(getActivity(), 1);
         manager = new Manager(getActivity(), new AppLoaderManager(getActivity()));
     }
 
@@ -77,16 +78,12 @@ public class MovieFragment extends Fragment {
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
-        Log.v(TAG, "xxx onViewStateRestored");
-        //save state here
         getContentListView().restoreState(savedInstanceState, adapter);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.v(TAG, "xxx onSaveInstanceState");
-        //restore state here
         getContentListView().saveState(outState);
     }
 }

@@ -19,8 +19,8 @@ import mx.saudade.popularmoviesapp.models.Movie;
  */
 public class MovieAdapter extends AppAdapter<Movie> {
 
-    public MovieAdapter(Context context) {
-        super(context);
+    public MovieAdapter(Context context, int identifier) {
+        super(context, identifier);
     }
 
     @Override

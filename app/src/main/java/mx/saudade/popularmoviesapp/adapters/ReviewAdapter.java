@@ -17,8 +17,8 @@ import mx.saudade.popularmoviesapp.models.Review;
  */
 public class ReviewAdapter extends AppAdapter<Review> {
 
-    public ReviewAdapter(Context context) {
-        super(context);
+    public ReviewAdapter(Context context, int identifier) {
+        super(context, identifier);
     }
 
     @Override

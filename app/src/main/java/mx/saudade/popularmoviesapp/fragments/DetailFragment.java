@@ -43,10 +43,16 @@ public class DetailFragment extends Fragment {
 
     private AppLoaderManager appLoaderManager;
 
+    private VideoAdapter videoAdapter;
+
+    private ReviewAdapter reviewAdapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appLoaderManager = new AppLoaderManager(getActivity());
+        videoAdapter = new VideoAdapter(getActivity(), 2);
+        reviewAdapter = new ReviewAdapter(getActivity(), 3);
     }
 
     @Override
@@ -54,12 +60,28 @@ public class DetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         setHasOptionsMenu(true);
+        Log.v(TAG, "XXX onCreateView");
         return rootView;
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        getContentListView(R.id.trailersContentListView).restoreState(savedInstanceState, videoAdapter);
+        getContentListView(R.id.reviewsContentListView).restoreState(savedInstanceState, reviewAdapter);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getContentListView(R.id.trailersContentListView).saveState(outState);
+        getContentListView(R.id.reviewsContentListView).saveState(outState);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        Log.v(TAG, "XXX onStart");
         displayInfo();
         loadContent();
     }
@@ -76,7 +98,6 @@ public class DetailFragment extends Fragment {
                 return false;
             }
         });
-
 
         MenuItem favoriteItem = menu.findItem(R.id.action_favorite);
         if(appLoaderManager.getMovie(getMovie().get_Id()) == null) {
@@ -99,8 +120,16 @@ public class DetailFragment extends Fragment {
 
     public void loadContent() {
         Manager manager = new Manager(getActivity(), appLoaderManager);
-        manager.getReviews(getMovie(), getContentListView(R.id.reviewsContentListView));
-        manager.getVideos(getMovie(), getContentListView(R.id.trailersContentListView));
+        List<Video> videos = getContentListView(R.id.trailersContentListView).getResults();
+        List<Review> reviews = getContentListView(R.id.reviewsContentListView).getResults();
+        if (videos.size() == 0) {
+            Log.v(TAG, "XXX calling getVideos");
+            manager.getVideos(getMovie(), getContentListView(R.id.trailersContentListView));
+        }
+        if (reviews.size() == 0) {
+            Log.v(TAG, "XXX calling getReviews");
+            manager.getReviews(getMovie(), getContentListView(R.id.reviewsContentListView));
+        }
     }
 
     public void displayInfo() {
@@ -117,7 +146,6 @@ public class DetailFragment extends Fragment {
         getTextView(R.id.detail_rating).setText(getMovie().getVoteAverageMessage());
         getTextView(R.id.detail_sinopsis).setText(getMovie().getOverview());
 
-        getContentListView(R.id.reviewsContentListView).setAdapter(new ReviewAdapter(getActivity()));
         getContentListView(R.id.reviewsContentListView).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -126,7 +154,6 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        getContentListView(R.id.trailersContentListView).setAdapter(new VideoAdapter(getActivity()));
         getContentListView(R.id.trailersContentListView).setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -134,7 +161,6 @@ public class DetailFragment extends Fragment {
                 ActionUtils.viewContent(getActivity(), video.getUrl());
             }
         });
-
     }
 
     private Movie getMovie() {
