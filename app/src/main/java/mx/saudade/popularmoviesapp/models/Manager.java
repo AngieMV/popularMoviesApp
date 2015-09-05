@@ -151,10 +151,11 @@ public class Manager {
     }
 
     public boolean isFavListChanged(List results) {
-        if(!isSetFavoritesMovies()) {
+        if(!isSetFavoritesMovies() || results == null) {
             return false;
         }
-        return results.size() != appLoaderManager.getMovies().size();
+        List movies = appLoaderManager.getMovies();
+        return results.size() != (movies == null ? 0: movies.size());
     }
 
 }
