@@ -1,14 +1,11 @@
 package mx.saudade.popularmoviesapp.adapters;
 
 import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import mx.saudade.popularmoviesapp.models.Movie;
 import mx.saudade.popularmoviesapp.models.Results;
 
 /**
@@ -19,6 +16,10 @@ public abstract class AppAdapter<T> extends BaseAdapter {
     protected Context context;
 
     protected List<T> results;
+
+    public static int INVALID_INDEX = -1;
+
+    protected int selectedIndex = INVALID_INDEX;
 
     public AppAdapter(Context context) {
         this.context = context;
@@ -47,6 +48,19 @@ public abstract class AppAdapter<T> extends BaseAdapter {
     public void setResults(List<T> results) {
         this.results = results;
         notifyDataSetChanged();
+    }
+
+    public void setSelectedIndex(int ind) {
+        selectedIndex = ind;
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedIndex() {
+        return selectedIndex;
+    }
+
+    protected int getColor(int id) {
+        return context.getResources().getColor(id);
     }
 
 }

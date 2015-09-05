@@ -8,10 +8,11 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 
 import mx.saudade.popularmoviesapp.R;
+import mx.saudade.popularmoviesapp.utils.PreferenceUtils;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings.
- * <p>
+ * <p/>
  * See <a href="http://developer.android.com/design/patterns/settings.html">
  * Android Design: Settings</a> for design guidelines and the <a
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
@@ -40,7 +41,7 @@ public class SettingsActivity extends PreferenceActivity
     private void bindPreferenceSummaryToValue(Preference preference) {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(this);
-
+        PreferenceUtils.setPrevPreferenceOrder(this);
         // Trigger the listener immediately with the preference's
         // current value.
         onPreferenceChange(preference,
@@ -51,7 +52,7 @@ public class SettingsActivity extends PreferenceActivity
 
     private void bindPreferenceCheckToValue(Preference preference) {
         preference.setOnPreferenceChangeListener(this);
-
+        PreferenceUtils.setPrevPreferenceFavorite(this);
         onPreferenceChange(preference,
                 PreferenceManager
                         .getDefaultSharedPreferences(preference.getContext())

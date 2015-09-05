@@ -11,8 +11,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
 import mx.saudade.popularmoviesapp.R;
 import mx.saudade.popularmoviesapp.models.Movie;
 
@@ -20,8 +18,6 @@ import mx.saudade.popularmoviesapp.models.Movie;
  * Created by angelicamendezvega on 8/5/15.
  */
 public class MovieAdapter extends AppAdapter<Movie> {
-
-    private int indiceSeleccionado = -1;
 
     public MovieAdapter(Context context) {
         super(context);
@@ -48,7 +44,7 @@ public class MovieAdapter extends AppAdapter<Movie> {
         Picasso.with(context).load(item.getThumbPosterPath())
                 .placeholder(R.drawable.placeholder_movie_icon).into(holder.image);
 
-        if (position == indiceSeleccionado) {
+        if (position == selectedIndex) {
             holder.layout.setBackgroundColor(getColor(R.color.button_background_on));
             holder.text.setBackgroundColor(getColor(R.color.button_background_on));
         } else {
@@ -58,16 +54,6 @@ public class MovieAdapter extends AppAdapter<Movie> {
 
         return convertView;
     }
-
-    public void setSelectedIndex(int ind) {
-        indiceSeleccionado = ind;
-        notifyDataSetChanged();
-    }
-
-    protected int getColor(int id) {
-        return context.getResources().getColor(id);
-    }
-
 
     static class ViewHolder {
 

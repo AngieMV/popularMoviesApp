@@ -15,6 +15,7 @@ import mx.saudade.popularmoviesapp.R;
 import mx.saudade.popularmoviesapp.callbacks.AppCallback;
 import mx.saudade.popularmoviesapp.data.AppLoaderManager;
 import mx.saudade.popularmoviesapp.interfaces.AppInterface;
+import mx.saudade.popularmoviesapp.utils.PreferenceUtils;
 import mx.saudade.popularmoviesapp.views.ContentListView;
 import retrofit.RestAdapter;
 
@@ -94,6 +95,9 @@ public class Manager {
         } else {
             invokeWebMovies(contentListView);
         }
+        contentListView.cleanPosition();
+        PreferenceUtils.setPrevPreferenceFavorite(context);
+        PreferenceUtils.setPrevPreferenceOrder(context);
     }
 
     public void invokeDBMovies(ContentListView<Movie> contentListView) {
@@ -116,16 +120,19 @@ public class Manager {
     }
 
     private String getOrderPreference() {
-        String preference  = PreferenceManager.getDefaultSharedPreferences(context)
-                .getString(context.getString(R.string.pref_sortby_key)
-                        , context.getString(R.string.pref_sortby_default_value));
+        String preference  = PreferenceUtils.getString(context, R.string.pref_sortby_key, R.string.pref_sortby_default_value);
         return getCode(preference);
     }
 
     private boolean isSetFavoritesMovies() {
-        boolean preference = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(context.getString(R.string.pref_fav_key)
-        , false);
-        return preference;
+        return PreferenceUtils.getBoolean(context, R.string.pref_fav_key);
+    }
+
+    public boolean isStatusChanged() {
+        boolean isStatusChanged = PreferenceUtils.isNewFavoriteConfig(context)
+                || PreferenceUtils.isNewOrderConfig(context);
+        Log.v(TAG, "xxx isStatusChanged " + isStatusChanged);
+        return isStatusChanged;
     }
 
     private String getCode(String selection) {

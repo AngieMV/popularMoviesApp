@@ -21,16 +21,18 @@ import mx.saudade.popularmoviesapp.models.Manager;
 import mx.saudade.popularmoviesapp.models.Movie;
 import mx.saudade.popularmoviesapp.views.ContentListView;
 
-public class MovieFragment extends Fragment{
+public class MovieFragment extends Fragment {
 
     private static final String TAG = MovieFragment.class.getSimpleName();
 
     private MovieAdapter adapter;
+    private Manager manager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         adapter = new MovieAdapter(getActivity());
+        manager = new Manager(getActivity(), new AppLoaderManager(getActivity()));
     }
 
     @Override
@@ -55,9 +57,8 @@ public class MovieFragment extends Fragment{
         });
         Log.v(TAG, "XXX onStart");
         List<Movie> results = getContentListView().getResults();
-        if (results.size() == 0) {
+        if (results.size() == 0 || manager.isStatusChanged()) {
             Log.v(TAG, "XXX calling getMovies");
-            Manager manager = new Manager(getActivity(), new AppLoaderManager(getActivity()));
             manager.getMovies(getContentListView());
         }
     }

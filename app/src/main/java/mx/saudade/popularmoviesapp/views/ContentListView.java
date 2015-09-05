@@ -28,6 +28,8 @@ public class ContentListView<T> extends LinearLayout implements IContentListView
 
     private static final String KEY_LIST_POSITION = TAG + "_POSITION";
 
+    private static final String KEY_SELECTED_INDEX = TAG + "_SELECTED_ITEM";
+
     private static final String KEY_STATE = TAG + "_KEY_STATE";
 
     private AbsListView view;
@@ -124,15 +126,20 @@ public class ContentListView<T> extends LinearLayout implements IContentListView
         List results = ((Results) bundle.getSerializable(KEY_STATE)).getResults();
         setResults(results);
         view.setSelection(bundle.getInt(KEY_LIST_POSITION));
+        adapter.setSelectedIndex(bundle.getInt(KEY_SELECTED_INDEX));
     }
 
     public void saveState(Bundle bundle) {
         if (bundle == null) {
             return;
         }
-
         bundle.putSerializable(KEY_STATE, this.adapter.getResults());
         bundle.putInt(KEY_LIST_POSITION, view.getFirstVisiblePosition());
+        bundle.putInt(KEY_SELECTED_INDEX, adapter.getSelectedIndex());
+    }
+
+    public void cleanPosition() {
+        adapter.setSelectedIndex(AppAdapter.INVALID_INDEX);
     }
 
 }
