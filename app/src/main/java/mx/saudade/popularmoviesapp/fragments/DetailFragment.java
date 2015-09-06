@@ -82,6 +82,9 @@ public class DetailFragment extends Fragment {
     public void onStart() {
         super.onStart();
         Log.v(TAG, "XXX onStart");
+        if (getMovie() == null) {
+            return;
+        }
         displayInfo();
         loadContent();
     }
@@ -89,6 +92,10 @@ public class DetailFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_detail, menu);
+        if (getMovie() == null) {
+            return;
+        }
+
         final ShareActionProvider provider = (ShareActionProvider) MenuItemCompat.getActionProvider(menu.findItem(R.id.action_share));
         ActionUtils.share(provider, getMovie().getShareMessage(getTrailer()));
         provider.setOnShareTargetSelectedListener(new ShareActionProvider.OnShareTargetSelectedListener() {
@@ -133,9 +140,6 @@ public class DetailFragment extends Fragment {
     }
 
     public void displayInfo() {
-        if (getActivity().getIntent() == null || !getActivity().getIntent().hasExtra(Intent.EXTRA_SHORTCUT_NAME)){
-            return;
-        }
 
         getTextView(R.id.detail_title).setText(getMovie().getOriginalTitle());
 
@@ -164,6 +168,9 @@ public class DetailFragment extends Fragment {
     }
 
     private Movie getMovie() {
+        if (getArguments() != null && getArguments().getSerializable(Intent.EXTRA_SHORTCUT_NAME) != null) {
+            return (Movie) getArguments().getSerializable(Intent.EXTRA_SHORTCUT_NAME);
+        }
         return (Movie) getActivity().getIntent().getSerializableExtra(Intent.EXTRA_SHORTCUT_NAME);
     }
 

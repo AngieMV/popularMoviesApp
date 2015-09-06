@@ -108,7 +108,7 @@ public class Movie implements Serializable {
         }
         StringBuilder url = new StringBuilder()
                 .append(BASE_URL_IMAGES)
-                .append(ImageSize.W500.getSize())
+                .append(ImageSize.W342.getSize())
                 .append(posterPath);
         return url.toString();
     }

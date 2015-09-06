@@ -10,6 +10,7 @@ import android.widget.Toast;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 import mx.saudade.popularmoviesapp.R;
 import mx.saudade.popularmoviesapp.callbacks.AppCallback;

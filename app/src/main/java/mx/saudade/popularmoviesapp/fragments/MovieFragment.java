@@ -15,6 +15,7 @@ import java.util.List;
 
 import mx.saudade.popularmoviesapp.R;
 import mx.saudade.popularmoviesapp.activities.DetailActivity;
+import mx.saudade.popularmoviesapp.activities.MovieActivity;
 import mx.saudade.popularmoviesapp.adapters.MovieAdapter;
 import mx.saudade.popularmoviesapp.data.AppLoaderManager;
 import mx.saudade.popularmoviesapp.models.Manager;
@@ -48,27 +49,13 @@ public class MovieFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        getContentListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Movie movie = (Movie) parent.getAdapter().getItem(position);
-                ((MovieAdapter) parent.getAdapter()).setSelectedIndex(position);
-                startDetailActivity(movie);
-            }
-        });
+        getContentListView().setOnItemClickListener((MovieActivity)getActivity());
         Log.v(TAG, "XXX onStart");
         List<Movie> results = getContentListView().getResults();
         if (results.size() == 0 || manager.isStatusChanged() || manager.isFavListChanged(results)) {
             Log.v(TAG, "XXX calling getMovies");
             manager.getMovies(getContentListView());
         }
-    }
-
-    private void startDetailActivity(Movie movie) {
-        Intent i = new Intent();
-        i.setClass(getActivity(), DetailActivity.class);
-        i.putExtra(Intent.EXTRA_SHORTCUT_NAME, movie);
-        startActivity(i);
     }
 
     private ContentListView getContentListView() {
