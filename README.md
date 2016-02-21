@@ -1,4 +1,4 @@
-# Project 1. Popular Movies app
+# Project 1 & 2. Popular Movies app
 
 In this project, we build an app to allow users to discover the most popular movies playing.
 
